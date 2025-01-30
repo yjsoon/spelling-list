@@ -11,16 +11,11 @@ import SwiftData
 struct WordListView: View {
     @Environment(\.modelContext) private var modelContext
     @Query private var words: [WordItem]
-    @State private var newWord = ""
+    @State private var isAddingWords = false
     
     var body: some View {
         NavigationStack {
             List {
-                Section("Add New Word") {
-                    TextField("Enter word", text: $newWord)
-                        .onSubmit(addWord)
-                }
-                
                 Section("Word List") {
                     ForEach(words) { word in
                         HStack {
@@ -35,16 +30,19 @@ struct WordListView: View {
             }
             .navigationTitle("Spelling List")
             .toolbar {
-                NavigationLink("Start Practice", destination: PracticeView())
+                ToolbarItem(placement: .primaryAction) {
+                    NavigationLink("Start Practice", destination: PracticeView())
+                }
+                ToolbarItem(placement: .topBarLeading) {
+                    Button(action: { isAddingWords = true }) {
+                        Image(systemName: "plus")
+                    }
+                }
+            }
+            .sheet(isPresented: $isAddingWords) {
+                AddWordsView()
             }
         }
-    }
-    
-    private func addWord() {
-        guard !newWord.isEmpty else { return }
-        let item = WordItem(word: newWord)
-        modelContext.insert(item)
-        newWord = ""
     }
 }
 
