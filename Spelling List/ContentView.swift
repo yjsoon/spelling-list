@@ -8,12 +8,6 @@
 import SwiftUI
 import SwiftData
 
-enum AppView {
-    case wordList
-    case practiceSession
-    case results
-}
-
 struct ContentView: View {
     var body: some View {
         WordListView()
