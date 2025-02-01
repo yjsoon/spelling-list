@@ -24,15 +24,13 @@ struct WordListView: View {
     var body: some View {
         NavigationStack {
             List {
-                Section("Word List") {
-                    ForEach(words) { word in
-                        HStack {
-                            Text(word.word)
-                            Spacer()
-                            Image(systemName: word.isStarred ? "star.fill" : "star")
-                                .foregroundStyle(.yellow)
-                                .onTapGesture { word.isStarred.toggle() }
-                        }
+                ForEach(words) { word in
+                    HStack {
+                        Text(word.word)
+                        Spacer()
+                        Image(systemName: word.isStarred ? "star.fill" : "star")
+                            .foregroundStyle(.yellow)
+                            .onTapGesture { word.isStarred.toggle() }
                     }
                 }
             }
