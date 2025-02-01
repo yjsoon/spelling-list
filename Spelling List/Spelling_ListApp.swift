@@ -10,6 +10,13 @@ import SwiftData
 
 @main
 struct Spelling_ListApp: App {
+
+    init() {
+        // Register default value for timePerWord
+        UserDefaults.standard.register(defaults: ["timePerWord": 3])
+    }
+
+
     var body: some Scene {
         WindowGroup {
             ContentView()

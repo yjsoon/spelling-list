@@ -11,6 +11,10 @@ import SwiftData
 struct PracticeView: View {
     @Environment(\.modelContext) private var modelContext
     @Query private var words: [WordItem]
+    
+    // Use AppStorage to retrieve the time per word setting
+    @AppStorage("timePerWord") private var timePerWord: Int = 3
+    
     @State private var currentIndex = 0
     @State private var timeRemaining = 3
     @State private var isPaused = false
@@ -26,7 +30,7 @@ struct PracticeView: View {
                 .font(.largeTitle)
                 .padding()
             
-            Text("Time remaining: \(timeRemaining)")
+            Text("Time remaining: \(timeRemaining)s")
                 .font(.title)
                 .onReceive(timer) { _ in
                     guard !isPaused else { return }
@@ -47,6 +51,7 @@ struct PracticeView: View {
             .padding()
         }
         .onAppear {
+            timeRemaining = timePerWord
             speechManager.speak(words[currentIndex].word)
         }
         .onDisappear {
@@ -57,7 +62,7 @@ struct PracticeView: View {
     private func nextWord() {
         if currentIndex < words.count - 1 {
             currentIndex += 1
-            timeRemaining = 5
+            timeRemaining = timePerWord
             speechManager.speak(words[currentIndex].word)
         }
     }

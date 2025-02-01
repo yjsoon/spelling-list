@@ -8,6 +8,8 @@ struct SettingsView: View {
     @State private var showAlert = false
     @State private var alertAction: AlertAction?
     
+    @AppStorage("timePerWord") private var timePerWord: Int = 3
+    
     enum AlertAction {
         case removeFavourites
         case clearAllWords
@@ -24,6 +26,15 @@ struct SettingsView: View {
                     Button("Clear All Words") {
                         alertAction = .clearAllWords
                         showAlert = true
+                    }
+                }
+                
+                Section(header: Text("Practice Settings")) {
+                    HStack {
+                        Text("Time per word:")
+                        Stepper(value: $timePerWord, in: 1...60) {
+                            Text("\(timePerWord)s")
+                        }
                     }
                 }
             }
