@@ -24,7 +24,7 @@ struct PracticeView: View {
     @State private var celebrationEmoji: String = ""
     
     // List of possible celebration emojis.
-    private let celebrationEmojis = ["🎉", "🥳", "🎊", "💃", "🕺"]
+    private let celebrationEmojis = ["🎉", "🥳", "🎊", "👏", "🪅"]
 
     var body: some View {
         if currentIndex < words.count {
