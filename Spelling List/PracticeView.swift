@@ -44,13 +44,21 @@ struct PracticeView: View {
                         }
                     }
                 
-                Button(isPaused ? "Resume" : "Pause") {
-                    isPaused.toggle()
-                    if !isPaused && !speechManager.isSpeaking {
+                Group {
+                    Button(isPaused ? "Resume" : "Pause") {
+                        isPaused.toggle()
+                        if !isPaused && !speechManager.isSpeaking {
+                            speechManager.speak(words[currentIndex].word)
+                        }
+                    }
+                    .buttonStyle(.borderedProminent)
+                    .tint(.gray)
+                    
+                    Button("Again?") {
                         speechManager.speak(words[currentIndex].word)
                     }
+                    .buttonStyle(.borderedProminent)
                 }
-                .buttonStyle(.borderedProminent)
                 .padding()
             }
             .onAppear {
