@@ -19,15 +19,16 @@ struct WordListView: View {
         case alphabetical
     }
     @State private var selectedSort: SortType = .dateAdded
+    @State private var isAscending = true
     
     var sortedWords: [WordItem] {
-        switch selectedSort {
+        let sorted = switch selectedSort {
         case .dateAdded:
-            // Sort by the createdAt property so the earliest added words come first.
-            return words.sorted { $0.createdAt < $1.createdAt }
+            words.sorted { $0.createdAt < $1.createdAt }
         case .alphabetical:
-            return words.sorted { $0.word.localizedCaseInsensitiveCompare($1.word) == .orderedAscending }
+            words.sorted { $0.word.localizedCaseInsensitiveCompare($1.word) == .orderedAscending }
         }
+        return isAscending ? sorted : sorted.reversed()
     }
     
     var body: some View {
@@ -60,8 +61,19 @@ struct WordListView: View {
                 }
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Menu {
-                        Button("Date Added") { selectedSort = .dateAdded }
-                        Button("Alphabetical") { selectedSort = .alphabetical }
+                        SortOptionButton(
+                            label: "Date Added",
+                            sort: SortType.dateAdded,
+                            selectedSort: $selectedSort,
+                            isAscending: $isAscending
+                        )
+                        
+                        SortOptionButton(
+                            label: "Alphabetical",
+                            sort: SortType.alphabetical,
+                            selectedSort: $selectedSort,
+                            isAscending: $isAscending
+                        )
                     } label: {
                         Image(systemName: "line.horizontal.3.decrease.circle")
                     }
@@ -76,7 +88,6 @@ struct WordListView: View {
             }
         }
     }
-    
 }
 
 #Preview {
