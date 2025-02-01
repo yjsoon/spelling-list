@@ -32,6 +32,7 @@ struct WordListView: View {
                     NavigationLink(destination: PracticeView()) {
                         Image(systemName: "play.fill")
                     }
+                    .disabled(words.isEmpty)
                 }
                 ToolbarItem(placement: .topBarLeading) {
                     Button(action: { isAddingWords = true }) {
