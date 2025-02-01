@@ -52,7 +52,7 @@ struct PracticeView: View {
                         }
                     }
                     .buttonStyle(.borderedProminent)
-                    .tint(.gray)
+                    .tint(isPaused ? .green : .gray)
                     
                     Button("Again?") {
                         speechManager.speak(words[currentIndex].word)

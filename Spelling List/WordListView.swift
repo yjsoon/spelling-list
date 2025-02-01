@@ -47,15 +47,17 @@ struct WordListView: View {
             .navigationTitle("Spelling List")
             .toolbar {
                 ToolbarItem(placement: .primaryAction) {
-                    Button(action: {
+                    Button {
                         isShowingPractice = true
-                    }) {
+                    } label: {
                         Image(systemName: "play.fill")
                     }
                     .disabled(words.isEmpty)
                 }
                 ToolbarItem(placement: .topBarLeading) {
-                    Button(action: { isAddingWords = true }) {
+                    Button {
+                        isAddingWords = true
+                    } label: {
                         Image(systemName: "plus")
                     }
                 }
