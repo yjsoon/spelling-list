@@ -48,13 +48,14 @@ struct AddWordsView: View {
             .split(separator: "\n")
             .map { String($0).trimmingCharacters(in: .whitespaces) }
             .filter { !$0.isEmpty }
-            .map { word -> (lowercased: String, titlecased: String) in
-                (word.lowercased(), word.capitalized)
-            }
+            .map { $0.capitalized }
         
-        for word in newWords {
-            if !existingWordSet.contains(word.lowercased) {
-                let item = WordItem(word: word.titlecased)
+        let baseDate = Date()
+        
+        for (index, word) in newWords.enumerated() {
+            if !existingWordSet.contains(word.lowercased()) {
+                let item = WordItem(word: word)
+                item.createdAt = baseDate.addingTimeInterval(TimeInterval(index))
                 modelContext.insert(item)
             }
         }

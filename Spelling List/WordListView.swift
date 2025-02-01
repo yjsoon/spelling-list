@@ -14,10 +14,26 @@ struct WordListView: View {
     @State private var isAddingWords = false
     @State private var isShowingPractice = false
     
+    enum SortType {
+        case dateAdded
+        case alphabetical
+    }
+    @State private var selectedSort: SortType = .dateAdded
+    
+    var sortedWords: [WordItem] {
+        switch selectedSort {
+        case .dateAdded:
+            // Sort by the createdAt property so the earliest added words come first.
+            return words.sorted { $0.createdAt < $1.createdAt }
+        case .alphabetical:
+            return words.sorted { $0.word.localizedCaseInsensitiveCompare($1.word) == .orderedAscending }
+        }
+    }
+    
     var body: some View {
         NavigationStack {
             List {
-                ForEach(words) { word in
+                ForEach(sortedWords) { word in
                     HStack {
                         Text(word.word)
                         Spacer()
@@ -41,6 +57,15 @@ struct WordListView: View {
                     Button(action: { isAddingWords = true }) {
                         Image(systemName: "plus")
                     }
+                }
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Menu {
+                        Button("Date Added") { selectedSort = .dateAdded }
+                        Button("Alphabetical") { selectedSort = .alphabetical }
+                    } label: {
+                        Image(systemName: "line.horizontal.3.decrease.circle")
+                    }
+                    .disabled(words.isEmpty)
                 }
             }
             .sheet(isPresented: $isAddingWords) {
