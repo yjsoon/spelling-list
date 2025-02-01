@@ -25,7 +25,10 @@ struct PracticeView: View {
     
     // List of possible celebration emojis.
     private let celebrationEmojis = ["🎉", "🥳", "🎊", "👏", "🪅"]
-
+    
+    // Using UUIDs for selection; WordItem has an auto-synthesized 'id'
+    @State private var selectedWordIDs: Set<UUID> = []
+    
     var body: some View {
         if currentIndex < words.count {
             VStack {
@@ -69,20 +72,20 @@ struct PracticeView: View {
                 speechManager.stop()
             }
         } else {
-            VStack(spacing: 40) {
-                Text("You're done!")
-                    .font(.largeTitle)
-                Text(celebrationEmoji)
-                    .font(.system(size: 100))
-                Button("Dismiss") {
-                    dismiss()
+            // Instead of a simple dismissal view, show a multi-select list of words for mistakes.
+            NavigationView {
+                List(words, id: \.id, selection: $selectedWordIDs) { word in
+                    Text(word.word)
                 }
-                .buttonStyle(.borderedProminent)
-                .padding()
-            }
-            .onAppear {
-                if celebrationEmoji.isEmpty {
-                    celebrationEmoji = celebrationEmojis.randomElement() ?? "🎉"
+                .environment(\.editMode, .constant(.active))
+                .navigationTitle("Any mistakes?")
+                .navigationBarTitleDisplayMode(.inline)
+                .toolbar {
+                    ToolbarItem(placement: .navigationBarTrailing) {
+                        Button("Done") {
+                            updateMistakesAndDismiss()
+                        }
+                    }
                 }
             }
         }
@@ -97,6 +100,15 @@ struct PracticeView: View {
             currentIndex = words.count
             timer.upstream.connect().cancel()
         }
+    }
+    
+    private func updateMistakesAndDismiss() {
+        for word in words {
+            if selectedWordIDs.contains(word.id) {
+                word.mistakeCount += 1
+            }
+        }
+        dismiss()
     }
 }
 

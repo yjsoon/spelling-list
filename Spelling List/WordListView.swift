@@ -5,32 +5,35 @@
 //  Created by YJ Soon on 30/1/25.
 //
 
-import SwiftUI
 import SwiftData
+import SwiftUI
 
 struct WordListView: View {
     @Environment(\.modelContext) private var modelContext
     @Query private var words: [WordItem]
     @State private var isAddingWords = false
     @State private var isShowingPractice = false
-    
+
     enum SortType {
         case dateAdded
         case alphabetical
     }
     @State private var selectedSort: SortType = .dateAdded
     @State private var isAscending = true
-    
+
     var sortedWords: [WordItem] {
-        let sorted = switch selectedSort {
-        case .dateAdded:
-            words.sorted { $0.createdAt < $1.createdAt }
-        case .alphabetical:
-            words.sorted { $0.word.localizedCaseInsensitiveCompare($1.word) == .orderedAscending }
-        }
+        let sorted =
+            switch selectedSort {
+            case .dateAdded:
+                words.sorted { $0.createdAt < $1.createdAt }
+            case .alphabetical:
+                words.sorted {
+                    $0.word.localizedCaseInsensitiveCompare($1.word) == .orderedAscending
+                }
+            }
         return isAscending ? sorted : sorted.reversed()
     }
-    
+
     var body: some View {
         NavigationStack {
             List {
@@ -38,10 +41,19 @@ struct WordListView: View {
                     HStack {
                         Text(word.word)
                         Spacer()
+                        if word.mistakeCount > 0 {
+                            Group {
+                                Image(systemName: "xmark")
+                                Text("\(word.mistakeCount)")
+                            }
+                            .font(.subheadline)
+                            .foregroundStyle(.secondary)
+                        }
                         Image(systemName: word.isStarred ? "star.fill" : "star")
                             .foregroundStyle(.yellow)
                             .onTapGesture { word.isStarred.toggle() }
                     }
+                    .padding(.vertical, 4)
                 }
             }
             .navigationTitle("Spelling List")
@@ -69,7 +81,7 @@ struct WordListView: View {
                             selectedSort: $selectedSort,
                             isAscending: $isAscending
                         )
-                        
+
                         SortOptionButton(
                             label: "Alphabetical",
                             sort: SortType.alphabetical,
