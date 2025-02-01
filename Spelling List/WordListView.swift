@@ -12,6 +12,7 @@ struct WordListView: View {
     @Environment(\.modelContext) private var modelContext
     @Query private var words: [WordItem]
     @State private var isAddingWords = false
+    @State private var isShowingPractice = false
     
     var body: some View {
         NavigationStack {
@@ -29,7 +30,9 @@ struct WordListView: View {
             .navigationTitle("Spelling List")
             .toolbar {
                 ToolbarItem(placement: .primaryAction) {
-                    NavigationLink(destination: PracticeView()) {
+                    Button(action: {
+                        isShowingPractice = true
+                    }) {
                         Image(systemName: "play.fill")
                     }
                     .disabled(words.isEmpty)
@@ -42,6 +45,9 @@ struct WordListView: View {
             }
             .sheet(isPresented: $isAddingWords) {
                 AddWordsView()
+            }
+            .sheet(isPresented: $isShowingPractice) {
+                PracticeView()
             }
         }
     }
